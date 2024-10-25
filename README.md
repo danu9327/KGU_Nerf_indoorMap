@@ -19,7 +19,7 @@ sangsang😿
 
 ![ 실행영상 ](assets/1.gif)
 
-#사용 방법
+# 사용 방법
 1. viewer.html 실행
 2. 5강 또는 제2공학관 건물 클릭 후 막 구경
 3. 로그인 선택 시 (id:admin, password: 1234)
