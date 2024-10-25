@@ -1,5 +1,5 @@
-# sangsang
-# kgu Nerf 3d indoor map viewer
+# sangsang😿
+# kgu Nerf 3d indoor map viewer😿
 
 # 실행 사진
 ![ viewer.html 건물 선택 화면 ](assets/1.png)
