@@ -26,3 +26,4 @@ sangsang😿
 4.admin.html로 자동 전환 후 막 구경
 
 문제나 궁금한 점 있으면 말해주세여 danu93273505@gmail.com으로..........
+(참고 : videos에 있는 nerf 결과 영상은 화질 낮춘 버전입니다)
