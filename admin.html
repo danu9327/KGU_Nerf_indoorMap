@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경기대 이상해씨로봇 실내뷰(관리자모드)</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .kgu_logo_img {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+        }
+
+        video {
+            width: 76%;
+            height: auto;
+            margin: 20px 0;
+        }
+        .container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .active {
+            display: flex;
+        }
+        .box {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            width: 350px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .back_button:hover, button:hover {
+            background-color: #45a049;
+        }
+        .folder-button, .floor-button {
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .floor-button {
+            display: none;
+            margin: 5px;
+        }
+
+        .back_button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            font-size: 13px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            width: 5%;
+        }
+
+        .viewer-btn {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 120px;
+        }
+
+        .logout-btn {
+            background-color: #ff0000;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 5%;
+        }
+        #selectedDate {
+            width: 15%;
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 로그인 화면 -->
+    <div class="container login-container active" id="loginContainer">
+        <img src="./imgs/kgu_logo.png" alt="kgu logo" class="kgu_logo_img">
+        <div class="box">
+            <h2>로그인</h2>
+            <input type="text" id="username" placeholder="사용자 이름">
+            <input type="password" id="password" placeholder="비밀번호" onkeydown="if(event.key === 'Enter'){login();}">
+            <button onclick="login()">로그인</button>
+            <button onclick="openViewer()" class="viewer-btn">viewer</button>
+        </div>
+    </div>
+
+    <!-- 폴더 선택 화면 -->
+    <div class="container folder-select-container" id="folderSelectContainer">
+        <img src="./imgs/kgu_logo.png" alt="kgu logo" class="kgu_logo_img">
+        <h2>날짜 선택</h2>
+        <input type="date" id="selectedDate">
+        
+        <div class="box">
+            <h2>건물 선택</h2>
+            <button class="folder-button" onclick="selectBuilding('제2공학관')">제2공학관</button>
+            <button class="folder-button" onclick="selectBuilding('5강의동')">5강의동</button>
+            
+            <div id="floorButtonsContainer">
+                <!-- 층 버튼들 -->
+                <h3>------------------------------------------------------</h3>
+                <button class="floor-button" onclick="selectFloor('1F')">1F</button>
+                <button class="floor-button" onclick="selectFloor('2F')">2F</button>
+                <button class="floor-button" onclick="selectFloor('3F')">3F</button>
+                <button class="floor-button" onclick="selectFloor('4F')">4F</button>
+                <button class="floor-button" onclick="selectFloor('5F')">5F</button>
+                <button class="floor-button" onclick="selectFloor('6F')">6F</button>
+                <button class="floor-button" onclick="selectFloor('B1')">B1</button>
+            </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+
+    <!-- 비디오 화면 -->
+    <div class="container video-container" id="videoContainer">
+        <img src="./imgs/kgu_logo.png" alt="kgu logo" class="kgu_logo_img">
+        <video id="streetView" controls>
+            <source src="" type="video/mp4">
+            현재 브라우저는 비디오 태그를 지원하지 않습니다.
+        </video>
+        <button class="back_button" onclick="backToSelectScreen()">뒤로 가기</button>
+        <button class="logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+
+    <script>
+        let selectedBuilding = '';
+        let selectedDate = '';
+        
+        // 로그인 함수
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if ((username === "admin" && password === "1234")) {
+                changeScreen('folderSelectContainer');
+            } else {
+                alert("잘못된 로그인 정보입니다.");
+            }
+        }
+
+        // 날짜 선택 함수
+        document.getElementById('selectedDate').addEventListener('change', function() {
+            const dateParts = this.value.split("-");
+            selectedDate = `${dateParts[1]}.${dateParts[2]}`; // 월.일 형식으로 변환
+        });
+
+        // 건물 선택 함수
+        function selectBuilding(building) {
+            selectedBuilding = building;
+            displayFloorButtons();
+        }
+
+        // 층 버튼 표시 함수
+        function displayFloorButtons() {
+            const floorButtons = document.querySelectorAll('.floor-button');
+            floorButtons.forEach(button => button.style.display = 'none'); // 모든 버튼 숨기기
+
+            if (selectedBuilding === '제2공학관') {
+                ['1F', '2F', '3F', '4F', '5F', '6F'].forEach(floor => {
+                    document.querySelector(`.floor-button[onclick="selectFloor('${floor}')"]`).style.display = 'inline-block';
+                });
+            } else if (selectedBuilding === '5강의동') {
+                ['B1', '1F', '2F', '3F', '4F'].forEach(floor => {
+                    document.querySelector(`.floor-button[onclick="selectFloor('${floor}')"]`).style.display = 'inline-block';
+                });
+            }
+        }
+
+        // 층 선택 함수
+        function selectFloor(floor) {
+            if (!selectedDate) {
+                alert("날짜를 먼저 선택해 주세요.");
+                return;
+            }
+            const videoPath = `./videos/${selectedBuilding}/${selectedDate}/${floor}_stair.mp4`;
+            console.log("불러오는 영상 경로:", videoPath); // 경로 확인용 콘솔 출력
+            playVideo(videoPath);
+        }
+
+        // 비디오 재생 함수
+        function playVideo(videoSrc) {
+            const videoElement = document.getElementById('streetView');
+            videoElement.src = videoSrc;
+            videoElement.load();
+            changeScreen('videoContainer');
+            videoElement.controls = false; // Hide controls
+        }
+
+        // 뒤로 가기 함수
+        function backToSelectScreen() {
+            resetSelection(); // 선택 초기화
+            changeScreen('folderSelectContainer');
+        }
+
+        // 선택 초기화 함수
+        function resetSelection() {
+            selectedBuilding = '';
+            selectedDate = '';
+            document.getElementById('selectedDate').value = '';
+            const floorButtons = document.querySelectorAll('.floor-button');
+            floorButtons.forEach(button => button.style.display = 'none');
+        }
+
+        // 화면 전환 함수
+        function changeScreen(containerId) {
+            document.querySelector('.active').classList.remove('active');
+            document.getElementById(containerId).classList.add('active');
+        }
+
+        // 로그아웃 함수
+        function logout() {
+            const videoElement = document.getElementById('streetView');
+            videoElement.pause();
+            videoElement.src = '';
+            resetSelection(); // 초기화
+            changeScreen('loginContainer');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function openViewer() {
+        window.location.href = 'viewer.html'; // viewer 버튼 클릭 시 test1.html로 이동
+        }
+
+        // 비디오 컨트롤: 마우스 휠 이벤트
+        document.getElementById('streetView').addEventListener('wheel', (event) => {
+            event.preventDefault(); // 스크롤 기본 동작 방지
+            const video = document.getElementById('streetView');
+            if (event.deltaY < 0 && video.currentTime + 1 <= video.duration) {
+                video.currentTime += 1;
+            } else if (event.deltaY > 0 && video.currentTime - 1 >= 0) {
+                video.currentTime -= 1;
+            }
+            video.pause(); // 프레임만 이동하고 비디오 재생은 하지 않음
+        });
+    </script>
+</body>
+</html>
