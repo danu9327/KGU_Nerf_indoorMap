@@ -1,4 +1,4 @@
-# sangsang😿
+sangsang😿
 # kgu Nerf 3d indoor map viewer😿
 
 # 실행 사진
@@ -7,16 +7,7 @@
 실내 뷰 화면
 ![ viewer.html 실내 뷰 화면 ](assets/2.png)
 
-내버려 sangsang😿
-# kgu Nerf 3d indoor map viewer😿
-
-# 실행 사진
-건물 선택 화면
-![ viewer.html 건물 선택 화면 ](assets/1.png)
-실내 뷰 화면
-![ viewer.html 실내 뷰 화면 ](assets/2.png)
-
-루시 내버려 좋아요
+# 루시 내버려 좋아요
 
 관리자 로그인 화면
 ![ viewer.html 관리자 로그인 화면 ](assets/3.png)
